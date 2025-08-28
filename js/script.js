@@ -1,8 +1,8 @@
 const reviews = [
             {
-                name: "Maria Silva",
-                role: "Doceria Camargo",
-                avatar: "M",
+                name: "Anna Luisa",
+                role: "Gym Street",
+                avatar: "A",
                 rating: 5,
                 content: "Excelente escolha! Superou minhas expectativas. A qualidade que tudo é feito é excepcional e o atendimento foi impecável. Recomendo fortemente para todos que buscam qualidade e eficiência.",
                 date: "15 de Agosto, 2024"
@@ -168,3 +168,6 @@ const reviews = [
         createIndicators();
         updateReviewCard();
         startAutoPlay();
+
+
+

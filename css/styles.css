@@ -113,14 +113,26 @@
 
 /* Estilização da nav */
 #Logo-nav{
-    font-size: 2rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+    margin-left: 2vh;
     cursor: pointer;
-    color: white;
+    max-width: 300px;
+}
+#Logo-nav img{
+    margin-top: -2vh;
+    cursor: pointer;
+    width: 220px;
+    height: 150px;
+    filter: opacity(0.8);
 }
 nav{
     background-color: rgba(0, 0, 0, 0.98);
     max-height: 150vh;
-    padding-bottom: 4vh;
+    padding-bottom: 6vh;
 }
 
 #menu{
@@ -128,9 +140,8 @@ nav{
     justify-content: flex-end;
     gap: 10vh;
     color: white;
-    justify-content: flex-end;
+    margin-top: -10vh;
     padding-right: 7vh;
-    padding-top: 2vh;
 }
 a{
     text-decoration: none;
@@ -339,10 +350,10 @@ a:visited{
 }
 
 .shadow {
- box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
+    box-shadow: inset 0 -3em 3em rgba(0,0,0,0.1),
              0 0  0 2px rgb(190, 190, 190),
              0.3em 0.3em 1em rgba(0,0,0,0.3);
-}
+            }
 
 
 /* Botão main */
@@ -379,6 +390,73 @@ a:visited{
 }
 
 /* Fim cards */
+
+/* Grandes marcas */
+
+#cltSts{
+background-color: rgba(0,0,0,0.89);
+max-height: 78vh;
+flex-flow: wrap row ;
+margin-top: -5vh;
+}
+
+.txt-marcas{
+    color: white;
+    text-align: center;
+    font-size: 0.8rem;
+    padding-top: 10vh;
+    cursor: default;
+}
+.txt-marcas span{
+    color: #c51159;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#texto-cltSts{
+    text-align: center;
+}
+
+#titulo-satisfacao{
+text-align:  center;
+color: white;
+text-shadow: 1px 1px 1px whitesmoke;
+font-size: 2.8rem;
+margin-top: 5vh;
+padding-top: 10vh;
+}
+
+.marcas{
+display: flex;
+justify-content: center;
+align-items: center;
+flex-wrap: wrap;
+gap: 5vh;
+
+}
+.marcas img{
+width: 150px;
+height: auto;
+margin: 20px;
+filter: grayscale(100%);
+transition: filter 0.5s ease-in-out;
+cursor: pointer;
+transition: transform 0.9s ease;
+transition: filter 0.5s ease-in-out;
+transition: background-color 0.9s ease-in-out;
+border-radius: 2vh;
+background-color: transparent;
+}
+.marcas img:hover{
+filter: grayscale(0%);
+transform: scale(1.1);
+transition: filter 0.5s ease-in-out;
+background-color: white;
+border-radius: 2vh;
+transition: background-color 0.9s ease-in-out;
+}
+
+/* Fim grandes marcas */
 
 /* Inicio Quem somos nós */
 
@@ -670,3 +748,136 @@ article{
                 font-size: 18px;
             }
         }
+
+        /* fim o que dizem os clientes */
+
+        /* Formulário */
+#formulario-ctt{
+            background-color: rgba(0, 0, 0, 0.94);
+            max-height: 100vh;
+            padding: 10vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+}
+#titulo-ctt{
+    color: white;
+    text-align: center;
+    font-size: 2.8rem;
+    margin-top: 5vh;
+    text-shadow: 1px 1px 1px whitesmoke;
+}
+form{
+    background-color: rgb(24, 23, 23);
+    padding: 8vh;
+    border-radius: 5vh;
+}
+form ::placeholder{
+    color: rgb(75, 74, 74);
+    font-weight: 200;
+}
+
+form input, form textarea, form button, form select{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 2vh;
+    padding: 1vh;
+    border-radius: 1vh;
+    border: none;
+    width: 40vh;
+    font-size: 1rem;
+}
+form select{
+    cursor: pointer;
+}
+form button{
+    background-color: #c51159;
+    color: white;
+    cursor: pointer;
+    transition: 0.5s ease, transform 0.5s ease;
+}
+form button:hover{
+    background-color: #bebebe;
+    color: #c51159;
+    border: solid 1px #bebebe;
+}
+
+#form-ctt{
+    display: flex;
+    flex-direction: column;
+    gap: 2vh;
+    margin-top: 5vh;
+}
+
+
+/* Inicio footer */
+
+footer {
+    background-color: rgba(0, 0, 0, 0.98); /* mesmo tom da nav */
+    color: white;
+    padding: 3vh 5vw;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* detalhe sutil */
+}
+
+#footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 2rem;
+}
+
+#logo-footer img {
+    filter: opacity(0.85);
+    transition: 0.3s ease-in-out;
+}
+
+#logo-footer img:hover {
+    filter: opacity(1);
+    transform: scale(1.05);
+}
+
+#texto-footer {
+    font-size: 0.9rem;
+    color: #bbbbbb; /* tom mais claro para contraste */
+    cursor: default;
+}
+
+#devoloper {
+    font-size: 0.9rem;
+    color: #bbbbbb; /* tom mais claro para contraste */
+    cursor: default;
+    text-align: right;
+}
+
+#developer a{
+    color: #c51159; 
+    font-weight: bold;
+    cursor: pointer;
+}
+
+
+
+#redes-sociais {
+    display: flex;
+    gap: 2rem;
+    font-size: 1.8rem;
+}
+
+#redes-sociais a {
+    color: white;
+    transition: 0.3s ease-in-out;
+}
+
+#redes-sociais a:hover {
+    color: #c51159; /* detalhe rosa para destacar */
+    transform: scale(1.2);
+}
+
+

@@ -16,12 +16,12 @@
 <body>
     <!-- Inico nav -->
     <nav>
-        <div id="Logo-nav"><span>Trade MKT</span></div>
+        <div id="Logo-nav"><img src="asssets/imagens/trrade-removebg-preview.png" alt="Logo Trade"></div>
         <div id="menu">
-            <a id="ini-nav" href="">Início</a>
-            <a id="qmsomos-nav" href="">Quem somos</a>
-            <a id="serv-nav" href="">Serviços</a>
-            <a id="ctt-nav" href="">Contato</a>
+            <a id="ini-nav" href="index.html">Início</a>
+            <a id="qmsomos-nav" href="#titulo-qmsomos">Quem somos</a>
+            <a id="serv-nav" href="#texto-sob-metodo">Serviços</a>
+            <a id="ctt-nav" href="#formulario-ctt">Contato</a>
         </div>
     </nav>
     <!-- Fim nav -->
@@ -106,10 +106,27 @@
                 <div class="container-BTN"><a href="index.html" id="Btn-qm">Saiba mais</a></div>
             </div>
             
-            </section>
+        </section>
         <!-- Fim quem somos nós -->
     </main>
-
+    <!-- Marcas -->
+    <section id="cltSts">
+            <div id="texto-cltSts">
+                <h1 id="titulo-satisfacao">Clientes que confiam em nós</h1>
+                <br>
+                <div class="marcas">
+                    <img src="asssets/imagens/gymstreet-removebg-preview.png" alt="Logo Gym Street">
+                    <img src="asssets/imagens/brand-7833518_1280.png" alt="Logo Brand">
+                    <img src="asssets/imagens/cologne-1884931_1280.jpg" alt="Logo Cologne">
+                    <img src="asssets/imagens/logo-7833524_1280.png" alt="Logo Bolota">
+                    <img src="asssets/imagens/guitar-1590907_1280.png" alt="Logo Guitar">
+                </div>
+                <div class="txt-marcas">
+                    <p id="merchan">Faça como eles e venha conhecer o <span>melhor</span> do marketing!</p>
+                </div>
+            </div>
+    </section>
+    <!-- Avaliações -->
     <article>
         <div id="avaltxt">
             <h1>Venha ver o que os nossos clientes dizem</h1>
@@ -148,12 +165,52 @@
         <div class="container-BTN"><a href="index.html" id="Btn-qm">Saiba mais</a></div>
     </article>
 
-    
+    <!-- Fim avaliações -->
+
+    <!-- Contato formulário -->
+     <section id="formulario-ctt">
+         <form action="" id="formulariozin">
+            <h1 id="titulo-ctt">Entre em contato</h1>
+            <br>
+            <div id="form-ctt">
+                <input type="text" placeholder="Nome" required>
+                <input type="text" placeholder="Nome da empresa" required>
+                <input type="email" placeholder="E-mail" required>
+                <select name="formCTT" id="select-form" required>
+                    <option value="Qual o motivo do contato">Qual o motivo do contato?</option>
+                    <option value="Quero receber uma proposta comercial">Quero receber uma proposta comercial</option>
+                    <option value="Quero conhecer mais a empresa">Quero conhecer mais a empresa e sua proposta</option>
+                    <option value="Quero conhecer os serviços">Quero conhecer os serviços</option>
+                </select>
+                <textarea name="" id="" cols="30" rows="10" placeholder="Mensagem" required></textarea>
+                <button type="submit" id="btn-ctt">Enviar</button>
+            </div>
+         </form>
+     </section>
+     <!-- Fim contato/ formulário -->
+
+     <!-- Inicio footer -->
+      <footer>
+        <div id="footer-content">
+            <div id="logo-footer"><img src="asssets/imagens/trrade-removebg-preview.png" alt="Logo Trade" width="150px">
+            <p id="texto-footer">© 2025 Trade MKT. Todos os direitos reservados.</p></div>
+            <div id="developer"><p>Desenvolvido por <a href="https://linkedin.com/in/fevjao" target="_blank">Fevjao</a></div>
+            <div id="redes-sociais">
+                <a href="https://instagram.com/fevjao" target="_blank"><i class="bi bi-instagram"></i></a>
+                <a href="https://facebook.com" target="_blank"><i class="bi bi-facebook"></i></a>
+                <a href="https://twitter.com" target="_blank"><i class="bi bi-twitter"></i></a>
+                <a href="https://linkedin.com" target="_blank"><i class="bi bi-linkedin"></i></a> 
+            
+            </div>
+
+      </footer>
+      <!-- fim footer -->
 
     <!-- Botão Whatsapp -->
-     <a href="https://instagram.com/fevjao" target="_blank"><i class="bi bi-whatsapp" style="position: fixed; width: 100px; height: 100px; right: 1px; bottom: 10px; color: green; font-size: 3.5rem;"></i></a>
+     <a href="https://wa.me/551140028922?text=Olá,%20quero%20conhecer%20mais%20sobre%20seus%20serviços!" target="_blank"><i class="bi bi-whatsapp" style="position: fixed; width: 100px; height: 100px; right: 1px; bottom: 10px; color: green; font-size: 3.5rem;"></i></a>
      <!-- Fim botão Whatsapp -->
 
+     <script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
