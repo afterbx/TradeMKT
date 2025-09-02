@@ -169,5 +169,31 @@ const reviews = [
         updateReviewCard();
         startAutoPlay();
 
+// Configuração do EmailJS
+   (function(){
+        emailjs.init("uebYJTF3MwXyfp66i"); // ⚠️ substitua pelo seu User ID
+    })();
 
+    const form = document.getElementById("formulariozin");
+    const toast = document.getElementById("toast");
 
+    function showToast(message, type) {
+        toast.innerText = message;
+        toast.className = "show " + type;
+
+        setTimeout(() => {
+            toast.className = toast.className.replace("show " + type, "");
+        }, 6000); // some após 6 segundos
+    }
+
+    form.addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        emailjs.sendForm("service_naw8mnh", "template_caxbhoa", this)
+        .then(() => {
+            showToast("✅ Mensagem enviada com sucesso!", "success");
+            form.reset();
+        }, () => {
+            showToast("❌ Erro ao enviar, tente novamente.", "error");
+        });
+    });

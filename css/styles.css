@@ -810,6 +810,38 @@ form button:hover{
     margin-top: 5vh;
 }
 
+#toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: #333;
+    color: #fff;
+    text-align: left;
+    border-radius: 8px;
+    padding: 15px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    font-size: 16px;
+    opacity: 0;
+    transition: opacity 0.5s, visibility 0.5s;
+    z-index: 9999;
+}
+
+/* Exibir */
+#toast.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+/* Cores de acordo com o status */
+#toast.success {
+    background-color: #28a745;
+}
+#toast.error {
+    background-color: #dc3545;
+}
+
+/* Fim formulario  */
 
 /* Inicio footer */
 

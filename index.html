@@ -168,26 +168,28 @@
     <!-- Fim avaliações -->
 
     <!-- Contato formulário -->
-     <section id="formulario-ctt">
-         <form action="" id="formulariozin">
+        <section id="formulario-ctt">
+        <form id="formulariozin">
             <h1 id="titulo-ctt">Entre em contato</h1>
             <br>
             <div id="form-ctt">
-                <input type="text" placeholder="Nome" required>
-                <input type="text" placeholder="Nome da empresa" required>
-                <input type="email" placeholder="E-mail" required>
-                <select name="formCTT" id="select-form" required>
-                    <option value="Qual o motivo do contato">Qual o motivo do contato?</option>
-                    <option value="Quero receber uma proposta comercial">Quero receber uma proposta comercial</option>
-                    <option value="Quero conhecer mais a empresa">Quero conhecer mais a empresa e sua proposta</option>
-                    <option value="Quero conhecer os serviços">Quero conhecer os serviços</option>
-                </select>
-                <textarea name="" id="" cols="30" rows="10" placeholder="Mensagem" required></textarea>
-                <button type="submit" id="btn-ctt">Enviar</button>
+            <input type="text" name="from_name" placeholder="Nome" required>
+            <input type="text" name="company" placeholder="Nome da empresa" required>
+            <input type="email" name="reply_to" placeholder="E-mail" required>
+            <select name="reason" id="select-form" required>
+                <option value="">Qual o motivo do contato?</option>
+                <option value="Proposta comercial">Quero receber uma proposta comercial</option>
+                <option value="Conhecer a empresa">Quero conhecer mais a empresa e sua proposta</option>
+                <option value="Conhecer os serviços">Quero conhecer os serviços</option>
+            </select>
+            <textarea name="message" cols="30" rows="10" placeholder="Mensagem" required></textarea>
+            <button type="submit" id="btn-ctt">Enviar</button>
             </div>
-         </form>
-     </section>
-     <!-- Fim contato/ formulário -->
+        </form>
+        </section>
+        <div id="toast"></div>
+<!-- Fim contato/ formulário -->
+
 
      <!-- Inicio footer -->
       <footer>
@@ -210,7 +212,7 @@
      <a href="https://wa.me/551140028922?text=Olá,%20quero%20conhecer%20mais%20sobre%20seus%20serviços!" target="_blank"><i class="bi bi-whatsapp" style="position: fixed; width: 100px; height: 100px; right: 1px; bottom: 10px; color: green; font-size: 3.5rem;"></i></a>
      <!-- Fim botão Whatsapp -->
 
-     <script src="https://cdn.emailjs.com/sdk/3.11.0/email.min.js"></script>
+     <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <script src="js/script.js"></script>
 </body>
 </html>
