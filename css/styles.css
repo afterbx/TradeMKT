@@ -925,7 +925,6 @@ footer {
 }
 
 /* Botão voltar para o topo */
-
         /* Estilos do botão voltar ao topo */
         .scroll-to-top {
             position: fixed;
@@ -948,6 +947,7 @@ footer {
             opacity: 0;
             visibility: hidden;
             transform: translateY(100px) scale(0.8);
+            overflow-y: hidden;
         }
 
         .scroll-to-top.show {
@@ -1089,7 +1089,6 @@ footer {
     }
     
     #img-h {
-        display: none;
         width: 300px;
         height: 500px;
         z-index: 1;
