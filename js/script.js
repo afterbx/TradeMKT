@@ -197,3 +197,217 @@ const reviews = [
             showToast("❌ Erro ao enviar, tente novamente.", "error");
         });
     });
+
+
+    /* Scrol tag a */
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+  anchor.addEventListener("click", function(e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute("href"));
+    const targetPosition = target.getBoundingClientRect().top + window.scrollY;
+    const startPosition = window.scrollY;
+    const distance = targetPosition - startPosition;
+    const duration = 1300; // tempo em ms -> 1500 = 1.5s
+    let start = null;
+
+    function animationScroll(currentTime) {
+      if (start === null) start = currentTime;
+      const elapsed = currentTime - start;
+      const progress = Math.min(elapsed / duration, 1);
+      window.scrollTo(0, startPosition + distance * progress);
+      if (elapsed < duration) requestAnimationFrame(animationScroll);
+    }
+
+    requestAnimationFrame(animationScroll);
+  });
+});
+
+/* Parte de voltar pra cima e aparecer a nav */
+let lastScrollTop = 0; // posição inicial do scroll
+const navbar = document.getElementById("navbar");
+
+window.addEventListener("scroll", function () {
+  let currentScroll = window.pageYOffset || document.documentElement.scrollTop;
+
+  if (currentScroll > lastScrollTop) {
+    // rolando pra baixo -> esconde nav
+    navbar.style.top = "-180px"; // ajusta conforme a altura da sua nav
+  } else {
+    // rolando pra cima -> mostra nav
+    navbar.style.top = "0";
+  }
+
+  lastScrollTop = currentScroll <= 0 ? 0 : currentScroll; // evita valores negativos
+});
+
+
+    /* Scroll tag a fim */
+
+
+    /* Scroll botão voltar para o topo */
+
+    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+        
+        // Variáveis de controle
+        let isScrolling = false;
+        let scrollTimer = null;
+
+        // Função para mostrar/ocultar o botão baseado no scroll
+        function handleScroll() {
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const showThreshold = 300; // Mostra o botão após 300px de scroll
+
+            if (scrollTop > showThreshold) {
+                scrollToTopBtn.classList.add('show');
+            } else {
+                scrollToTopBtn.classList.remove('show');
+            }
+
+            // Atualiza o progresso do scroll (opcional)
+            updateScrollProgress();
+        }
+
+        // Função para atualizar o progresso do scroll
+        function updateScrollProgress() {
+            const scrollProgress = document.querySelector('.scroll-progress');
+            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            // Atualiza o gradiente do progresso
+            scrollProgress.style.background = `conic-gradient(from 0deg, #667eea ${scrollPercent * 3.6}deg, transparent ${scrollPercent * 3.6}deg)`;
+        }
+
+        // Função para scroll suave até o topo
+        function scrollToTop() {
+            const scrollStep = -window.scrollY / 15;
+            const scrollInterval = setInterval(() => {
+                if (window.scrollY !== 0) {
+                    window.scrollBy(0, scrollStep);
+                } else {
+                    clearInterval(scrollInterval);
+                }
+            }, 15);
+        }
+
+        // Função alternativa usando scrollTo (mais moderna)
+        function smoothScrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', handleScroll);
+
+        // Clique no botão
+        scrollToTopBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Adiciona efeito visual de clique
+            this.classList.add('clicked');
+            setTimeout(() => {
+                this.classList.remove('clicked');
+            }, 600);
+
+            // Rola para o topo
+            smoothScrollToTop();
+        });
+
+        // Suporte para teclado (acessibilidade)
+        scrollToTopBtn.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                this.click();
+            }
+        });
+
+        // Throttle para melhor performance
+        let ticking = false;
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(handleScroll);
+                ticking = true;
+                setTimeout(() => {
+                    ticking = false;
+                }, 10);
+            }
+        }
+
+        // Substitui o event listener original
+        window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('scroll', requestTick);
+
+        // Inicialização
+        handleScroll(); // Verifica posição inicial
+
+        /* Reponsividade js */
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Criar o menu hamburger
+    const nav = document.getElementById('navbar');
+    const menu = document.getElementById('menu');
+    
+    // Criar o botão hamburger
+    const hamburger = document.createElement('div');
+    hamburger.className = 'hamburger';
+    hamburger.innerHTML = `
+        <span></span>
+        <span></span>
+        <span></span>
+    `;
+    
+    // Inserir o hamburger na nav
+    nav.appendChild(hamburger);
+    
+    // Função para toggle do menu
+    function toggleMenu() {
+        hamburger.classList.toggle('active');
+        menu.classList.toggle('active');
+        
+        // Previne scroll do body quando menu está aberto
+        if (menu.classList.contains('active')) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
+    }
+    
+    // Event listener para o hamburger
+    hamburger.addEventListener('click', toggleMenu);
+    
+    // Fechar menu ao clicar nos links
+    const menuLinks = menu.querySelectorAll('a');
+    menuLinks.forEach(link => {
+        link.addEventListener('click', () => {
+            hamburger.classList.remove('active');
+            menu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        });
+    });
+    
+    // Fechar menu ao clicar fora dele
+    document.addEventListener('click', function(e) {
+        if (!nav.contains(e.target)) {
+            hamburger.classList.remove('active');
+            menu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Fechar menu ao redimensionar para desktop
+    window.addEventListener('resize', function() {
+        if (window.innerWidth > 768) {
+            hamburger.classList.remove('active');
+            menu.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+    });
+    
+    // Prevenir propagação de cliques no menu
+    menu.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+});
