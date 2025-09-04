@@ -1,3 +1,22 @@
+/* Scroll bonitinho */
+  const lenis = new Lenis({
+      duration: 1.2,   // duração da animação (quanto menor, mais rápido)
+      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easing mais suave
+      smoothWheel: true,
+      smoothTouch: false
+    })
+
+    // Loop para atualizar o scroll
+    function raf(time) {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+  /* fim scroll */
+
+/* Reviews */
+
+
 const reviews = [
             {
                 name: "Anna Luisa",
