@@ -141,6 +141,7 @@ nav{
     width: 100%;
     transition: top 0.3s ease; /* animação suave ao aparecer/desaparecer */
     z-index: 1000;
+    overflow: hidden;
 }
 nav a{
     color: white;
@@ -920,6 +921,7 @@ footer {
     display: flex;
     gap: 2rem;
     font-size: 1.8rem;
+    overflow: hidden;
 }
 
 #redes-sociais a {
@@ -1262,6 +1264,7 @@ footer {
     #botaozinho {
         padding-top:12vh;
         z-index: 2;
+        overflow: hidden;
     }
 
     /* SEÇÃO QUEM SOMOS RESPONSIVA */

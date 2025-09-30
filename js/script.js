@@ -1,21 +1,265 @@
-/* Scroll bonitinho */
-  const lenis = new Lenis({
-      duration: 1.2,   // duração da animação (quanto menor, mais rápido)
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)), // easing mais suave
-      smoothWheel: true,
-      smoothTouch: false
-    })
+/* SmoothScroll corrigido e melhorado */
+class SmoothScroll {
+  constructor(options = {}) {
+    // Configurações
+    this.ease = typeof options.ease === 'number' ? options.ease : 0.03; // quanto do delta é interpolado
+    this.speed = typeof options.speed === 'number' ? options.speed : 1; // multiplicador de entrada (wheel/touch/keys)
+    this.enabled = options.enabled !== false;
 
-    // Loop para atualizar o scroll
-    function raf(time) {
-      lenis.raf(time)
-      requestAnimationFrame(raf)
+    // Estado
+    this.current = window.pageYOffset || document.documentElement.scrollTop || 0;
+    this.target = this.current;
+    this.isScrolling = false;
+    this.rafId = null;
+    this.scrollTimeout = null;
+
+    // Bind dos handlers para podermos remover depois
+    this.onWheel = this.onWheel.bind(this);
+    this.onTouchStart = this.onTouchStart.bind(this);
+    this.onTouchMove = this.onTouchMove.bind(this);
+    this.onNativeScroll = this.onNativeScroll.bind(this);
+    this.onResize = this.onResize.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
+
+    // touch state
+    this._touchStartY = 0;
+
+    this.init();
+  }
+
+  init() {
+    this.setupSmoothing();
+    this.bindEvents();
+    this.startRAF();
+    console.log('🚀 SmoothScroll inicializado!');
+  }
+
+  setupSmoothing() {
+    // Evita conflito com CSS native smooth
+    try { document.documentElement.style.scrollBehavior = 'auto'; } catch (e) {}
+    document.body.style.willChange = 'scroll-position';
+  }
+
+  bindEvents() {
+    // NOTE: usamos passive: false para poder e.preventDefault() e evitar que o browser faça
+    // o scroll nativo *além* do nosso controle (isso evita "double scroll").
+    window.addEventListener('wheel', this.onWheel, { passive: false });
+    window.addEventListener('touchstart', this.onTouchStart, { passive: true });
+    window.addEventListener('touchmove', this.onTouchMove, { passive: false });
+    window.addEventListener('scroll', this.onNativeScroll, { passive: true });
+    window.addEventListener('resize', this.onResize, { passive: true });
+    window.addEventListener('keydown', this.onKeyDown, { passive: false }); // para PageUp/PageDown/Home/End
+  }
+
+  onWheel(e) {
+    if (!this.enabled) return;
+    // previne scroll nativo; nós vamos controlar com window.scrollTo
+    e.preventDefault();
+    // deltaY positivo = scroll pra baixo
+    this.target += e.deltaY * this.speed;
+    this.clampTarget();
+    this.isScrolling = true;
+    this._resetScrollTimeout();
+  }
+
+  onTouchStart(e) {
+    this._touchStartY = e.touches && e.touches[0] ? e.touches[0].clientY : 0;
+  }
+
+  onTouchMove(e) {
+    if (!this.enabled) return;
+    if (!e.touches || !e.touches[0]) return;
+    e.preventDefault(); // evitar o scroll nativo
+    const touchY = e.touches[0].clientY;
+    const deltaY = this._touchStartY - touchY; // positivo => rolar para baixo
+    this.target += deltaY * this.speed * 1.5; // fator extra pra touch
+    this._touchStartY = touchY;
+    this.clampTarget();
+    this.isScrolling = true;
+    this._resetScrollTimeout();
+  }
+
+  onNativeScroll() {
+    // Se o usuário interage com a barra/scroll programático externo, sincronizamos
+    if (!this.isScrolling) {
+      this.current = window.pageYOffset || document.documentElement.scrollTop || 0;
+      this.target = this.current;
     }
-    requestAnimationFrame(raf)
-  /* fim scroll */
+    this._resetScrollTimeout();
+  }
+
+  onResize() {
+    this.clampTarget();
+  }
+
+  onKeyDown(e) {
+    if (!this.enabled) return;
+
+    // tratamos teclas que mexem no scroll e previnimos comportamento nativo
+    const key = e.key;
+    const viewport = window.innerHeight;
+    let handled = false;
+
+    switch (key) {
+      case 'PageDown':
+        this.target += viewport * 0.9 * this.speed;
+        handled = true;
+        break;
+      case 'PageUp':
+        this.target -= viewport * 0.9 * this.speed;
+        handled = true;
+        break;
+      case 'ArrowDown':
+        this.target += 40 * this.speed;
+        handled = true;
+        break;
+      case 'ArrowUp':
+        this.target -= 40 * this.speed;
+        handled = true;
+        break;
+      case 'Home':
+        this.target = 0;
+        handled = true;
+        break;
+      case 'End':
+        this.target = this.getMaxScroll();
+        handled = true;
+        break;
+      default:
+        break;
+    }
+
+    if (handled) {
+      e.preventDefault();
+      this.clampTarget();
+      this.isScrolling = true;
+      this._resetScrollTimeout();
+    }
+  }
+
+  getMaxScroll() {
+    return Math.max(
+      document.body.scrollHeight || 0,
+      document.documentElement.scrollHeight || 0
+    ) - window.innerHeight;
+  }
+
+  clampTarget() {
+    const max = this.getMaxScroll();
+    if (!Number.isFinite(this.target)) this.target = 0;
+    this.target = Math.max(0, Math.min(this.target, Math.max(0, max)));
+  }
+
+  update() {
+    if (this.enabled && (this.isScrolling || Math.abs(this.target - this.current) > 0.5)) {
+      const delta = (this.target - this.current) * this.ease;
+      this.current += delta;
+
+      // se estiver muito perto, "encaixa" para evitar sub-pixels infinitos
+      if (Math.abs(this.target - this.current) < 0.5) {
+        this.current = this.target;
+        this.isScrolling = false;
+      }
+
+      // aplicamos o scroll
+      window.scrollTo(0, Math.round(this.current));
+    }
+
+    // loop RAF
+    this.rafId = requestAnimationFrame(() => this.update());
+  }
+
+  startRAF() {
+    if (!this.rafId) this.rafId = requestAnimationFrame(() => this.update());
+  }
+
+  _resetScrollTimeout() {
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+    this.scrollTimeout = setTimeout(() => {
+      this.isScrolling = false;
+    }, 120);
+  }
+
+  // Método para scroll programático
+  scrollTo(position, smooth = true) {
+    if (typeof position === 'string') {
+      const el = document.querySelector(position);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        position = window.pageYOffset + rect.top;
+      } else {
+        position = 0;
+      }
+    }
+
+    // número esperado
+    position = Math.max(0, Math.min(position, this.getMaxScroll()));
+    this.target = position;
+
+    if (!smooth) {
+      // pula a animação
+      this.current = this.target;
+      window.scrollTo(0, this.current);
+      this.isScrolling = false;
+    } else {
+      this.isScrolling = true;
+    }
+  }
+
+  scrollToElement(element, offset = 0) {
+    this.scrollTo(typeof element === 'string' ? element : (() => {
+      if (!element) return 0;
+      const rect = element.getBoundingClientRect();
+      return window.pageYOffset + rect.top + offset;
+    })());
+  }
+
+  toggle() {
+    this.enabled = !this.enabled;
+    console.log('Scroll suave', this.enabled ? 'ativado' : 'desativado');
+  }
+
+  destroy() {
+    this.enabled = false;
+
+    // remover listeners
+    window.removeEventListener('wheel', this.onWheel, { passive: false });
+    window.removeEventListener('touchstart', this.onTouchStart, { passive: true });
+    window.removeEventListener('touchmove', this.onTouchMove, { passive: false });
+    window.removeEventListener('scroll', this.onNativeScroll, { passive: true });
+    window.removeEventListener('resize', this.onResize, { passive: true });
+    window.removeEventListener('keydown', this.onKeyDown, { passive: false });
+
+    // cancelar RAF
+    if (this.rafId) cancelAnimationFrame(this.rafId);
+    this.rafId = null;
+
+    // restaurar estilos
+    try { document.documentElement.style.scrollBehavior = ''; } catch (e) {}
+    document.body.style.willChange = '';
+
+    // limpar timeout
+    if (this.scrollTimeout) clearTimeout(this.scrollTimeout);
+
+    console.log('SmoothScroll destruído.');
+  }
+}
+
+// Inicializar com valores padrão
+const smoothScroll = new SmoothScroll({
+  ease: 0.03, // quanto do gap é aplicado por frame (0.03 é suave)
+  speed: 1    // multiplica os eventos (aumente para scroll mais "rápido")
+});
+
+// Exemplo: controlar via console
+// smoothScroll.scrollTo(0); // topo
+// smoothScroll.scrollTo('#minhaSecao'); // scroll até elemento
+// smoothScroll.toggle(); // ativa/desativa
+// smoothScroll.destroy(); // remove tudo
+
+/* fim scroll */
 
 /* Reviews */
-
 
 const reviews = [
             {
@@ -218,27 +462,17 @@ const reviews = [
     });
 
 
-    /* Scrol tag a */
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener("click", function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute("href"));
-    const targetPosition = target.getBoundingClientRect().top + window.scrollY;
-    const startPosition = window.scrollY;
-    const distance = targetPosition - startPosition;
-    const duration = 1300; // tempo em ms -> 1500 = 1.5s
-    let start = null;
-
-    function animationScroll(currentTime) {
-      if (start === null) start = currentTime;
-      const elapsed = currentTime - start;
-      const progress = Math.min(elapsed / duration, 1);
-      window.scrollTo(0, startPosition + distance * progress);
-      if (elapsed < duration) requestAnimationFrame(animationScroll);
-    }
-
-    requestAnimationFrame(animationScroll);
-  });
+/* Scroll tag a - INTEGRADO COM SMOOTH SCROLL */
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener("click", function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute("href"));
+        
+        if (target) {
+            // Usar o smooth scroll personalizado
+            smoothScroll.scrollToElement(target);
+        }
+    });
 });
 
 /* Parte de voltar pra cima e aparecer a nav */
@@ -260,12 +494,12 @@ window.addEventListener("scroll", function () {
 });
 
 
-    /* Scroll tag a fim */
+/* Scroll tag a fim */
 
 
-    /* Scroll botão voltar para o topo */
+/* Scroll botão voltar para o topo - INTEGRADO COM SMOOTH SCROLL */
 
-    const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+const scrollToTopBtn = document.getElementById('scrollToTopBtn');
         
         // Variáveis de controle
         let isScrolling = false;
@@ -289,32 +523,19 @@ window.addEventListener("scroll", function () {
         // Função para atualizar o progresso do scroll
         function updateScrollProgress() {
             const scrollProgress = document.querySelector('.scroll-progress');
-            const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-            const scrollPercent = (scrollTop / docHeight) * 100;
-            
-            // Atualiza o gradiente do progresso
-            scrollProgress.style.background = `conic-gradient(from 0deg, #667eea ${scrollPercent * 3.6}deg, transparent ${scrollPercent * 3.6}deg)`;
+            if (scrollProgress) {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+                const scrollPercent = (scrollTop / docHeight) * 100;
+                
+                // Atualiza o gradiente do progresso
+                scrollProgress.style.background = `conic-gradient(from 0deg, #667eea ${scrollPercent * 3.6}deg, transparent ${scrollPercent * 3.6}deg)`;
+            }
         }
 
-        // Função para scroll suave até o topo
-        function scrollToTop() {
-            const scrollStep = -window.scrollY / 15;
-            const scrollInterval = setInterval(() => {
-                if (window.scrollY !== 0) {
-                    window.scrollBy(0, scrollStep);
-                } else {
-                    clearInterval(scrollInterval);
-                }
-            }, 15);
-        }
-
-        // Função alternativa usando scrollTo (mais moderna)
-        function smoothScrollToTop() {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
-            });
+        // Função para scroll suave até o topo usando nosso smooth scroll
+        function scrollToTopSmooth() {
+            smoothScroll.scrollTo(0);
         }
 
         // Event listeners
@@ -330,8 +551,8 @@ window.addEventListener("scroll", function () {
                 this.classList.remove('clicked');
             }, 600);
 
-            // Rola para o topo
-            smoothScrollToTop();
+            // Rola para o topo usando nosso smooth scroll
+            scrollToTopSmooth();
         });
 
         // Suporte para teclado (acessibilidade)
